@@ -51,30 +51,7 @@ resource "aws_route_table_association" "public_subnet_assoc" {
   route_table_id = aws_route_table.public_route.id
 }
 
-resource "aws_instance" "selenium-server" {
-  ami           = "ami-0989fb15ce71ba39e"
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
-  key_name      = "ansible" 
-  vpc_security_group_ids = [aws_security_group.selenium_group.id]
-
-  tags = {
-    Name = "selenium-server"
-  }
-}
-
-resource "aws_instance" "test-server" {
-  ami           = "ami-0989fb15ce71ba39e"
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
-  key_name      = "ansible" 
-  vpc_security_group_ids = [aws_security_group.test_server_group.id]
-
-  tags = {
-    Name = "test-server"
-  }
-}
-
+# Security Groups
 resource "aws_security_group" "selenium_group" {
   name_prefix = "selenium-security-group"
   description = "My security group for Selenium"
@@ -105,5 +82,30 @@ resource "aws_security_group" "test_server_group" {
     to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Instances
+resource "aws_instance" "selenium-server" {
+  ami           = "ami-0989fb15ce71ba39e"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
+  key_name      = "ansible"
+  vpc_security_group_ids = [aws_security_group.selenium_group.id]
+
+  tags = {
+    Name = "selenium-server"
+  }
+}
+
+resource "aws_instance" "test-server" {
+  ami           = "ami-0989fb15ce71ba39e"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
+  key_name      = "ansible"
+  vpc_security_group_ids = [aws_security_group.test_server_group.id]
+
+  tags = {
+    Name = "test-server"
   }
 }
