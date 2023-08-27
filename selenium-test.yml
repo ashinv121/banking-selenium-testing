@@ -1,0 +1,88 @@
+- name : Configure Docker on EC2 Instances
+  hosts : selenium-test-machine
+  become: true
+  connection : ssh
+  tasks : 
+  
+  - name: Update APT cache
+    become: yes
+    apt:
+        update_cache: yes
+  
+  - name: Install openjdk-11-jdk package
+    become: yes
+    apt:
+        name: openjdk-11-jdk
+        state: present
+    
+  - name: Install Google Chrome repository signing key
+    apt_key:
+      url: https://dl.google.com/linux/linux_signing_key.pub
+      state: present
+
+  - name: Add Google Chrome APT repository
+    apt_repository:
+      repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+      state: present
+
+  - name: Update APT cache
+    apt:
+        update_cache: yes
+
+  - name: Install Google Chrome
+    apt:
+      name: google-chrome-stable
+      state: present
+      
+  - name: get google chrome driver
+    command: wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/116.0.5845.96/linux64/chromedriver-linux64.zip
+    
+    
+  - name: install zip tool
+    become: yes
+    apt: 
+      name: zip 
+      state: present
+
+  - name: unzip chromedriver
+    become: yes
+    shell: "unzip chromedriver-linux64.zip"
+
+  - name: Move ChromeDriver to /usr/bin
+    become: yes
+    command: "mv chromedriver-linux64/chromedriver /usr/bin/chromedriver"
+      
+  - name: Change ownership to root
+    become: yes
+    file:
+        path: /usr/bin/chromedriver
+        owner: root
+        group: root
+        mode: '0755'
+        
+  - name: Remove downloaded zip file
+    become: yes
+    file:
+        path: chromedriver-linux64.zip
+        state: absent
+        
+  - name: Remove temporary unzipped folder
+    become: yes
+    file:
+        path: chromedriver-linux64
+        state: absent
+
+
+  - name: Copy JAR file
+    copy:
+        src: target/ testing-0.0.1-SNAPSHOT.jar
+        dest: /home/ubuntu/com.web-testing.jar
+
+  - name : run-java-file
+    command : sudo java -jar /home/ubuntu/com.web-testing.jar
+
+
+ 
+
+    
+  
