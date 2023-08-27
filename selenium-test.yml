@@ -76,7 +76,7 @@
   - name: Copy JAR file
     become: yes
     copy:
-        src: /var/lib/jenkins/workspace/BANKING-SELENIUM/target/testing-0.0.1-SNAPSHOT.jar
+        src: com.web-testing.jar
         dest: /home/ubuntu/com.web-testing.jar
 
   - name : run-java-file
