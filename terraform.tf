@@ -94,6 +94,7 @@ resource "aws_instance" "selenium-server" {
   subnet_id     = aws_subnet.public_subnet.id
   key_name      = "ansible" 
   vpc_security_group_ids = [aws_security_group.selenium_group.id]
+  private_ip    = "172.31.33.170"  # Assign private IP address
 
   tags = {
     Name = "selenium-server"
@@ -106,6 +107,7 @@ resource "aws_instance" "test-server" {
   subnet_id     = aws_subnet.public_subnet.id
   key_name      = "ansible" 
   vpc_security_group_ids = [aws_security_group.test_server_group.id]
+  private_ip    = "172.31.33.171"  # Assign private IP address
 
   tags = {
     Name = "test-server"
