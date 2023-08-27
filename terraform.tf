@@ -11,9 +11,9 @@ variable "aws_secret_key" {}
 resource "aws_instance" "selenium-server" {
   ami           = "ami-0989fb15ce71ba39e"
   instance_type = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.selenium-group.id]
-  private_ip    = "172.31.33.75" 
+  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
   key_name      = "ansible" 
+  vpc_security_group_ids = [aws_security_group.selenium-group.id]
 
   tags = {
     Name = "selenium-server"
@@ -23,9 +23,9 @@ resource "aws_instance" "selenium-server" {
 resource "aws_instance" "test-server" {
   ami           = "ami-0989fb15ce71ba39e"
   instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
+  key_name      = "ansible" 
   vpc_security_group_ids = [aws_security_group.test-server-group.id]
-  private_ip    = "172.31.33.76"
-  key_name      = "ansible"  
 
   tags = {
     Name = "test-server"
@@ -44,6 +44,7 @@ resource "aws_security_group" "selenium-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 resource "aws_security_group" "test-server-group" {
   name_prefix = "my-security-group"
   description = "My security group"
@@ -62,4 +63,36 @@ resource "aws_security_group" "test-server-group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+# Create a subnet for instances with internet access
+resource "aws_subnet" "public_subnet" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = "172.31.33.0/24"
+}
+
+# Create an Internet Gateway
+resource "aws_internet_gateway" "my_igw" {
+  vpc_id = aws_vpc.my_vpc.id
+}
+
+# Attach the Internet Gateway to the VPC
+resource "aws_vpc_attachment" "my_igw_attachment" {
+  vpc_id              = aws_vpc.my_vpc.id
+  internet_gateway_id = aws_internet_gateway.my_igw.id
+}
+
+# Route all traffic from the public subnet to the Internet Gateway
+resource "aws_route_table" "public_route" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.my_igw.id
+  }
+}
+
+resource "aws_route_table_association" "public_subnet_assoc" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_route.id
 }
