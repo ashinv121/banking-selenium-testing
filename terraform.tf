@@ -56,7 +56,7 @@ resource "aws_instance" "selenium-server" {
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
   key_name      = "ansible" 
-  vpc_security_group_ids = [aws_security_group.selenium-group.id]
+  vpc_security_group_ids = [aws_security_group.selenium_group.id]
 
   tags = {
     Name = "selenium-server"
@@ -68,16 +68,16 @@ resource "aws_instance" "test-server" {
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public_subnet.id  # Specify the public subnet
   key_name      = "ansible" 
-  vpc_security_group_ids = [aws_security_group.test-server-group.id]
+  vpc_security_group_ids = [aws_security_group.test_server_group.id]
 
   tags = {
     Name = "test-server"
   }
 }
 
-resource "aws_security_group" "selenium-group" {
-  name_prefix = "my-security-group"
-  description = "My security group"
+resource "aws_security_group" "selenium_group" {
+  name_prefix = "selenium-security-group"
+  description = "My security group for Selenium"
 
   # Allow SSH (port 22) and HTTP (port 8080) traffic from any IP address
   ingress {
@@ -88,9 +88,9 @@ resource "aws_security_group" "selenium-group" {
   }
 }
 
-resource "aws_security_group" "test-server-group" {
-  name_prefix = "my-security-group"
-  description = "My security group"
+resource "aws_security_group" "test_server_group" {
+  name_prefix = "test-server-security-group"
+  description = "My security group for Test Server"
 
   # Allow SSH (port 22) and HTTP (port 8080) traffic from any IP address
   ingress {
