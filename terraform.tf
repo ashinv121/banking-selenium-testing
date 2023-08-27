@@ -39,6 +39,13 @@ resource "aws_security_group" "selenium_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  egress {
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 }
 
 resource "aws_security_group" "test_server_group" {
@@ -60,6 +67,13 @@ resource "aws_security_group" "test_server_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  egress {
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 }
 
 # Create EC2 instances
