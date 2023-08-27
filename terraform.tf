@@ -17,9 +17,9 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
-# Create an Internet Gateway
+# Create an Internet Gateway and attach it to the VPC
 resource "aws_internet_gateway" "my_igw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.my_vpc.id
 
   tags = {
     Name = "MyIGW"
@@ -34,12 +34,6 @@ resource "aws_subnet" "public_subnet" {
   tags = {
     Name = "PublicSubnet"
   }
-}
-
-# Attach the Internet Gateway to the VPC
-resource "aws_vpc_attachment" "my_igw_attachment" {
-  vpc_id              = aws_vpc.my_vpc.id
-  internet_gateway_id = aws_internet_gateway.my_igw.id
 }
 
 # Route all traffic from the public subnet to the Internet Gateway
