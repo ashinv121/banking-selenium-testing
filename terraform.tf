@@ -8,52 +8,14 @@ provider "aws" {
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
-# Create a VPC
-resource "aws_vpc" "my_vpc" {
-  cidr_block = "172.31.0.0/16"
-
-  tags = {
-    Name = "MyVPC"
-  }
-}
-
-# Create an Internet Gateway and attach it to the VPC
-resource "aws_internet_gateway" "my_igw" {
-  vpc_id = aws_vpc.my_vpc.id
-
-  tags = {
-    Name = "MyIGW"
-  }
-}
-
-# Create a subnet for instances with internet access
-resource "aws_subnet" "public_subnet" {
-  vpc_id     = aws_vpc.my_vpc.id
-  cidr_block = "172.31.33.0/24"
-
-  tags = {
-    Name = "PublicSubnet"
-  }
-}
-
-# Route all traffic from the public subnet to the Internet Gateway
-resource "aws_route_table" "public_route" {
-  vpc_id = aws_vpc.my_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.my_igw.id
-  }
-}
-
-resource "aws_route_table_association" "public_subnet_assoc" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_route.id
+# Set the existing VPC ID
+variable "existing_vpc_id" {
+  default = "vpc-0c9e049ba97ebee48"
 }
 
 # Create security groups
 resource "aws_security_group" "selenium_group" {
-  vpc_id      = aws_vpc.my_vpc.id
+  vpc_id      = var.existing_vpc_id
   name_prefix = "selenium-security-group"
   description = "My security group for Selenium"
 
@@ -67,7 +29,7 @@ resource "aws_security_group" "selenium_group" {
 }
 
 resource "aws_security_group" "test_server_group" {
-  vpc_id      = aws_vpc.my_vpc.id
+  vpc_id      = var.existing_vpc_id
   name_prefix = "test-server-security-group"
   description = "My security group for Test Server"
 
