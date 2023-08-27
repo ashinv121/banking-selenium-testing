@@ -1,5 +1,5 @@
 - name : Configure Docker on EC2 Instances
-  hosts : selenium-test-machine
+  hosts : selenium-server
   become: true
   connection : ssh
   tasks : 
