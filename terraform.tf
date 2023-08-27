@@ -13,7 +13,7 @@ resource "aws_instance" "selenium-server" {
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.selenium-group.id]
   private_ip    = "10.0.1.10" 
-  key_name      = "ansible.pem" 
+  key_name      = "ansible" 
 
   tags = {
     Name = "selenium-server"
@@ -25,7 +25,7 @@ resource "aws_instance" "test-server" {
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.test-server-group.id]
   private_ip    = "10.0.1.11"
-  key_name      = "ansible.pem"  
+  key_name      = "ansible"  
 
   tags = {
     Name = "test-server"
