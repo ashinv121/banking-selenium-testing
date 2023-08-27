@@ -12,7 +12,7 @@ resource "aws_instance" "selenium-server" {
   ami           = "ami-0989fb15ce71ba39e"
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.selenium-group.id]
-  private_ip    = "10.0.1.10" 
+  private_ip    = "172.31.33.75" 
   key_name      = "ansible" 
 
   tags = {
@@ -24,7 +24,7 @@ resource "aws_instance" "test-server" {
   ami           = "ami-0989fb15ce71ba39e"
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.test-server-group.id]
-  private_ip    = "10.0.1.11"
+  private_ip    = "172.31.33.76"
   key_name      = "ansible"  
 
   tags = {
